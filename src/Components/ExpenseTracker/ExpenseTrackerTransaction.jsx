@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { database } from "../firebase";
 import { ref, onValue, remove } from "firebase/database";
 import ExpensesTotalAmt from "./ExpensesTotalAmt";
+import TransactionStats from "./TransactionStats";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
@@ -88,6 +89,12 @@ const TransactionList = () => {
         selectedMonth={selectedMonth}
         selectedYear={selectedYear}
       />
+      <button className="stats">Show Stats</button>
+      <TransactionStats
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+      />
+
       <h2>Monthly Transactions</h2>
       <div>
         <button onClick={handlePreviousMonth}>Previous Month</button>

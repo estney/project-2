@@ -15,6 +15,20 @@ export default function CurrencyConversion({
   const [convertedAmount, setConvertedAmount] = useState("");
   const [currencyOptions, setCurrencyOptions] = useState([]); //list of currency
 
+  const handleAmountToBeConverted = (e) => {
+    let inputValue = e.target.value;
+
+    if (inputValue.startsWith(".")) {
+      inputValue = `0${inputValue}`;
+    }
+
+    const regex = /^(?!-)\d*(\.\d{0,2})?$/;
+
+    if (regex.test(inputValue) || inputValue === "") {
+      setToConvertAmount(inputValue);
+    }
+  };
+
   //display currency in drop down selection
   useEffect(() => {
     // fetch currencies from the API only when user click on 'convert currency', to save usage.
@@ -94,9 +108,11 @@ export default function CurrencyConversion({
             <p>Amount to be converted:</p>
             <input
               type="number"
+              step="0.01"
+              min="0.01"
+              required
+              onChange={(e) => handleAmountToBeConverted(e)}
               value={toConvertAmount}
-              onChange={(e) => setToConvertAmount(e.target.value)}
-              placeholder="Enter amount"
             />
             <p>From</p>
             <select
