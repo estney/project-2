@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { database } from "../firebase";
 import { ref, onValue, remove } from "firebase/database";
 import ExpensesTotalAmt from "./ExpensesTotalAmt";
 import TransactionStats from "./TransactionStats";
+import { filterTransactionsByMonthAndYear } from "./utilities.js";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // transaction header
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // header - month
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // header - year
 
   useEffect(() => {
     const fetchTransactions = () => {
@@ -44,7 +45,8 @@ const TransactionList = () => {
     };
 
     fetchTransactions();
-  }, [selectedMonth, selectedYear]); //dependencies is the monthly
+  }, [selectedMonth, selectedYear]);
+  //dependencies is the month and year
 
   //.getMonth is 0 indexed. Jan - Dec = index 0 to 11
 
@@ -83,18 +85,27 @@ const TransactionList = () => {
       });
   };
 
+  //useMemo is React's use memory.
+  //occurs when the transactions state changes,
+  const sortedTransactions = useMemo(() => {
+    return [...transactions].sort((a, b) => {
+      //latest date to earlist date
+      const dateA = new Date(a.selectedDate).getTime();
+      const dateB = new Date(b.selectedDate).getTime();
+      return dateB - dateA;
+    });
+  }, [transactions]);
+
   return (
     <div>
       <ExpensesTotalAmt
         selectedMonth={selectedMonth}
         selectedYear={selectedYear}
       />
-      <button className="stats">Show Stats</button>
       <TransactionStats
         selectedMonth={selectedMonth}
         selectedYear={selectedYear}
       />
-
       <h2>Monthly Transactions</h2>
       <div>
         <button onClick={handlePreviousMonth}>Previous Month</button>
@@ -114,7 +125,7 @@ const TransactionList = () => {
           month: "long",
         })} ${selectedYear}`}</h3>
         <ul>
-          {transactions.map((transaction) => (
+          {sortedTransactions.map((transaction) => (
             <li key={transaction.id}>
               <p>Date: {transaction.selectedDate}</p>
               <p>Name: {transaction.name}</p>

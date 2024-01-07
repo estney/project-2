@@ -4,10 +4,11 @@ import { ref, onValue } from "firebase/database";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
+import { filterTransactionsByMonthAndYear } from "./utilities.js";
 
 export default function TransactionStats({ selectedMonth, selectedYear }) {
   const [labels, setLabels] = useState([]);
-  const [amountByCategory, setAmountbyCategory] = useState({});
+  const [amountByCategory, setAmountByCategory] = useState({});
 
   useEffect(() => {
     const totalExpenseAmt = ref(database, "personal-expenses");
@@ -19,18 +20,25 @@ export default function TransactionStats({ selectedMonth, selectedYear }) {
         const transactionsArray = Object.values(data);
         console.log("transaction amt", Object.values(data));
         //filter transactions for the selected month and year
-        const filteredTransactions = transactionsArray.filter((transaction) => {
-          const transactionMonth = new Date(
-            transaction.selectedDate
-          ).getMonth();
-          const transactionYear = new Date(
-            transaction.selectedDate
-          ).getFullYear();
-          return (
-            transactionMonth === selectedMonth &&
-            transactionYear === selectedYear
-          );
-        });
+        //import filter
+        const filteredTransactions = filterTransactionsByMonthAndYear(
+          data,
+          selectedMonth,
+          selectedYear
+        );
+
+        // const filteredTransactions = transactionsArray.filter((transaction) => {
+        //   const transactionMonth = new Date(
+        //     transaction.selectedDate
+        //   ).getMonth();
+        //   const transactionYear = new Date(
+        //     transaction.selectedDate
+        //   ).getFullYear();
+        //   return (
+        //     transactionMonth === selectedMonth &&
+        //     transactionYear === selectedYear
+        //   );
+        // });
 
         // Calculate total amount for the categories
         // use hashmap to count amount per category
@@ -49,7 +57,7 @@ export default function TransactionStats({ selectedMonth, selectedYear }) {
           }
         });
 
-        setAmountbyCategory(amountPerCategory);
+        setAmountByCategory(amountPerCategory);
         console.log("Amount by category:", amountPerCategory);
         console.log("Amount by category 2:", amountByCategory);
 
