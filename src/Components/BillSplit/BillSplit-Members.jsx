@@ -19,7 +19,9 @@ export default function BillSplitMembers({ activeGroup }) {
 
   const handleAddMember = async (e, activeGroup) => {
     if (activeGroup === "") {
-      alert("A Group is not selected for adding members.\nPlease select a group first.");
+      alert(
+        "A Group is not selected for adding members.\nPlease select a group first."
+      );
       return;
     } else if (memberName === "") {
       alert("Please enter a member name.");
@@ -27,7 +29,10 @@ export default function BillSplitMembers({ activeGroup }) {
     }
     e.preventDefault();
     try {
-      const memberRef = ref(database, `${DB_GROUPS_KEY}/${activeGroup}/members`);
+      const memberRef = ref(
+        database,
+        `${DB_GROUPS_KEY}/${activeGroup}/members`
+      );
       const newMemberRef = await push(memberRef, {
         memberName: memberName,
       });
@@ -39,7 +44,10 @@ export default function BillSplitMembers({ activeGroup }) {
   };
 
   useEffect(() => {
-    const memberListRef = ref(database, `${DB_GROUPS_KEY}/${activeGroup}/members`);
+    const memberListRef = ref(
+      database,
+      `${DB_GROUPS_KEY}/${activeGroup}/members`
+    );
     onValue(memberListRef, (snapshot) => {
       const membersData = snapshot.val();
       if (membersData) {
@@ -54,7 +62,10 @@ export default function BillSplitMembers({ activeGroup }) {
 
   useEffect(() => {
     console.log(expenses);
-    const expensesRef = ref(database, `${DB_GROUPS_KEY}/${activeGroup}/expenses`);
+    const expensesRef = ref(
+      database,
+      `${DB_GROUPS_KEY}/${activeGroup}/expenses`
+    );
     onValue(expensesRef, (snapshot) => {
       const expensesData = snapshot.val();
       if (expensesData) {
@@ -81,7 +92,10 @@ export default function BillSplitMembers({ activeGroup }) {
     try {
       console.log(activeGroup);
       setExpenses([...expenses, newExpense]);
-      const expenseRef = ref(database, `${DB_GROUPS_KEY}/${activeGroup}/expenses`);
+      const expenseRef = ref(
+        database,
+        `${DB_GROUPS_KEY}/${activeGroup}/expenses`
+      );
       const newExpenseRef = await push(expenseRef, newExpense);
     } catch (error) {
       console.error(error.message);
@@ -148,7 +162,10 @@ export default function BillSplitMembers({ activeGroup }) {
           <br />
           <label>
             Paid By:
-            <select value={inputPaidBy} onChange={(e) => setInputPaidBy(e.target.value)}>
+            <select
+              value={inputPaidBy}
+              onChange={(e) => setInputPaidBy(e.target.value)}
+            >
               <option value="">Select</option>
               {members.map((member) => (
                 <option key={member.id} value={member.memberName}>

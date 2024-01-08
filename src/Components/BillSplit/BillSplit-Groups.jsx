@@ -65,7 +65,10 @@ export default function BillSplitGroups() {
       {/* Active Group Selector*/}
       <h2>
         Active Group:
-        <select value={activeGroup} onChange={(e) => setActiveGroup(e.target.value)}>
+        <select
+          value={activeGroup}
+          onChange={(e) => setActiveGroup(e.target.value)}
+        >
           <option value="">Select</option>
           {groupList.map((group) => (
             <option key={group.id} value={group.id}>
